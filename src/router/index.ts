@@ -16,8 +16,7 @@ const routes: Array<RouteConfig> = [
       path: '/advert',
       name: 'Advert',
       component: () => import('@/views/advert/index.vue')
-    },
-    {
+    }, {
       path: '/course',
       name: 'Course',
       component: () => import('@/views/course/index.vue')
@@ -25,6 +24,10 @@ const routes: Array<RouteConfig> = [
       path: '/role',
       name: 'Role',
       component: () => import('@/views/role/index.vue')
+    }, {
+      path: '/menu',
+      name: 'Menu',
+      component: () => import('@/views/menu/index.vue')
     }, {
       path: '/user',
       name: 'User',
