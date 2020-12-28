@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -11,31 +12,38 @@ const routes: Array<RouteConfig> = [
     children: [{
       path: '/',
       name: 'Home',
-      component: () => import('@/views/home/index.vue')
+      component: () => import('@/views/home/index.vue'),
+      meta: { requiresAuth: true }
     }, {
       path: '/advert',
       name: 'Advert',
-      component: () => import('@/views/advert/index.vue')
+      component: () => import('@/views/advert/index.vue'),
+      meta: { requiresAuth: true }
     }, {
       path: '/course',
       name: 'Course',
-      component: () => import('@/views/course/index.vue')
+      component: () => import('@/views/course/index.vue'),
+      meta: { requiresAuth: true }
     }, {
       path: '/role',
       name: 'Role',
-      component: () => import('@/views/role/index.vue')
+      component: () => import('@/views/role/index.vue'),
+      meta: { requiresAuth: true }
     }, {
       path: '/menu',
       name: 'Menu',
-      component: () => import('@/views/menu/index.vue')
+      component: () => import('@/views/menu/index.vue'),
+      meta: { requiresAuth: true }
     }, {
       path: '/user',
       name: 'User',
-      component: () => import('@/views/user/index.vue')
+      component: () => import('@/views/user/index.vue'),
+      meta: { requiresAuth: true }
     }, {
       path: '/resourse',
       name: 'Resource',
-      component: () => import('@/views/resource/index.vue')
+      component: () => import('@/views/resource/index.vue'),
+      meta: { requiresAuth: true }
     }]
   },
   {
@@ -50,6 +58,21 @@ const routes: Array<RouteConfig> = [
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!store.state.user) {
+      next({
+        name: 'Login',
+        query: { redirect: to.fullPath }
+      })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

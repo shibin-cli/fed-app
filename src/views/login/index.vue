@@ -64,7 +64,11 @@ export default Vue.extend({
           })
         }
         this.$store.commit('setUser', res.data.content)
-        this.$router.push('/')
+        this.$router.push(this.$route.query.redirect as string || '/')
+        this.$message({
+          type: 'success',
+          message: '登陆成功'
+        })
       } catch (error) {
         console.log(error)
       } finally {
