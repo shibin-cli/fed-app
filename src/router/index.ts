@@ -35,6 +35,11 @@ const routes: Array<RouteConfig> = [
       component: () => import('@/views/menu/index.vue'),
       meta: { requiresAuth: true }
     }, {
+      path: '/menu/create',
+      name: 'MenuCreate',
+      component: () => import('@/views/menu/create.vue'),
+      meta: { requiresAuth: true }
+    }, {
       path: '/user',
       name: 'User',
       component: () => import('@/views/user/index.vue'),

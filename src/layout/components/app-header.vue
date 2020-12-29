@@ -38,6 +38,7 @@ export default Vue.extend({
   },
   created() {
     this.loadUserInfo()
+    this.loadUserInfo()
   },
   methods: {
     async loadUserInfo() {
@@ -45,7 +46,6 @@ export default Vue.extend({
       if (data.state) {
         this.userInfo = data.content
       }
-      console.log(data)
     },
     loginout() {
       this.$confirm('确定要退出吗？', '提示')

@@ -1,4 +1,5 @@
-import request from '@/utils/request'
+import request, { ResponseData } from '@/utils/request'
+import qs from 'qs'
 
 interface User {
   phone: string
@@ -6,11 +7,9 @@ interface User {
 }
 
 export async function login(data: User) {
-  return request.post('/front/user/login', {
-    ...data
-  })
+  return request.post<ResponseData>('/front/user/login', qs.stringify(data))
 }
 
 export async function getUserInfo() {
-  return request.get('/front/user/getInfo')
+  return request.get<ResponseData>('/front/user/getInfo')
 }
