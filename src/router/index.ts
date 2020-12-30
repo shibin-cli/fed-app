@@ -30,6 +30,12 @@ const routes: Array<RouteConfig> = [
       component: () => import('@/views/role/index.vue'),
       meta: { requiresAuth: true }
     }, {
+      path: '/role/:id/alloc-menu',
+      name: 'AllocMenu',
+      component: () => import('@/views/role/alloc-menu.vue'),
+      props: true,
+      meta: { requiresAuth: true }
+    }, {
       path: '/menu',
       name: 'Menu',
       component: () => import('@/views/menu/index.vue'),
@@ -38,6 +44,11 @@ const routes: Array<RouteConfig> = [
       path: '/menu/create',
       name: 'MenuCreate',
       component: () => import('@/views/menu/create.vue'),
+      meta: { requiresAuth: true }
+    }, {
+      path: '/menu/:id/edit',
+      name: 'MenuEdit',
+      component: () => import('@/views/menu/edit.vue'),
       meta: { requiresAuth: true }
     }, {
       path: '/user',

@@ -1,18 +1,19 @@
 import request from '@/utils/request'
 
-interface Menu {
+export interface Menu {
   parentId: number
   name: string
   href: string
-  icon?: string
-  orderNum?: number
-  description?: string
-  shown?: boolean
+  icon: string
+  orderNum: number
+  description: string
+  shown: boolean
 }
 
 interface ResponseData<T> {
   code: string
   message: string
+  mesg: string
   time: string
   data: T
 }
@@ -21,7 +22,7 @@ export function createMenu<T>(data: Menu) {
   return request.post<ResponseData<T>>('/boss/menu/saveOrUpdate', data)
 }
 
-export function getMenuInfo<T>(id = -1) {
+export function getMenuInfo<T>(id: number | string = -1) {
   return request.get<ResponseData<T>>('/boss/menu/getEditMenuInfo', {
     params: {
       id
