@@ -15,7 +15,7 @@
         :role="currentRole"
       />
     </el-dialog>
-    <el-table :data="roles" border style="width: 100%">
+    <el-table :data="roles" border style="width: 100%" v-loading="loading">
       <el-table-column
         type="index"
         label="编号"
@@ -36,7 +36,7 @@
               @click="
                 $router.push({
                   name: 'AllocMenu',
-                  params: { id: scope.row.id }
+                  params: { roleId: scope.row.id }
                 })
               "
               type="text"

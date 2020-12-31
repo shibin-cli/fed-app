@@ -30,7 +30,7 @@ const routes: Array<RouteConfig> = [
       component: () => import('@/views/role/index.vue'),
       meta: { requiresAuth: true }
     }, {
-      path: '/role/:id/alloc-menu',
+      path: '/role/:roleId/alloc-menu',
       name: 'AllocMenu',
       component: () => import('@/views/role/alloc-menu.vue'),
       props: true,

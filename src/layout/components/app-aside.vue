@@ -3,8 +3,6 @@
     <el-menu
       default-active="2"
       class="el-menu-vertical-demo"
-      @open="handleOpen"
-      @close="handleClose"
       background-color="#545c64"
       text-color="#fff"
       active-text-color="#ffd04b"
@@ -16,10 +14,10 @@
           <span>权限管理</span>
         </template>
         <el-menu-item index="/role">
-          <i class="el-icon-document"></i> 角色管理
+          <i class="el-icon-user"></i> 角色管理
         </el-menu-item>
         <el-menu-item index="/menu">
-          <i class="el-icon-document"></i> 菜单管理
+          <i class="el-icon-menu"></i> 菜单管理
         </el-menu-item>
         <el-menu-item index="/resourse">
           <i class="el-icon-document"></i> 资源管理
@@ -30,7 +28,7 @@
         <span slot="title">课程管理</span>
       </el-menu-item>
       <el-menu-item index="/user">
-        <i class="el-icon-document"></i>
+        <i class="el-icon-user"></i>
         <span slot="title">用户管理</span>
       </el-menu-item>
       <el-menu-item index="/advert">

@@ -6,7 +6,7 @@
           >添加菜单</el-button
         >
       </div>
-      <el-table :data="menus" border style="width: 100%">
+      <el-table :data="menus" border style="width: 100%" v-loading="loading">
         <el-table-column type="index" label="编号" width="50" align="center">
         </el-table-column>
         <el-table-column prop="name" label="菜单名称"> </el-table-column>
@@ -15,9 +15,7 @@
         <el-table-column prop="orderNum" label="排序"> </el-table-column>
         <el-table-column prop="address" label="操作" align="center">
           <template slot-scope="scope">
-            <el-button
-              size="small"
-              @click.native.prevent="editMenu(scope.row)"
+            <el-button size="small" @click.native.prevent="editMenu(scope.row)"
               >编辑</el-button
             >
             <el-button
@@ -42,7 +40,8 @@ interface Menu {
 export default Vue.extend({
   data() {
     return {
-      menus: []
+      menus: [],
+      loading: false
     }
   },
   created() {
@@ -50,7 +49,9 @@ export default Vue.extend({
   },
   methods: {
     async loadAllMenu() {
+      this.loading = true
       const { data } = await getAllMenu()
+      this.loading = false
       if (data.code === '000000') {
         this.menus = data.data
       }

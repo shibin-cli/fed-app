@@ -1,70 +1,107 @@
 <template>
-  <el-tree
-    :data="data"
-    show-checkbox
-    default-expand-all
-    node-key="id"
-    ref="tree"
-    highlight-current
-    :props="defaultProps"
-  >
-  </el-tree>
+  <el-card>
+    <el-tree
+      :data="menuNodes"
+      show-checkbox
+      default-expand-all
+      highlight-current
+      node-key="id"
+      ref="tree"
+      :default-checked-keys="checkedMenuId"
+      :props="defaultProps"
+    >
+    </el-tree>
+    <div align="center">
+      <el-button type="primary" @click="onSave">保存</el-button>
+      <el-button @click="resetChecked">清空</el-button>
+    </div>
+  </el-card>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-export default Vue.extend({
+// import {DefaultMethods} from 'vue/types'
+import { getMenuNodeList, allocateRoleMenus, getRoleMenus, Menu } from '@/services/menu'
+import { Tree } from 'element-ui'
+interface MenuNode extends Menu {
+  id: string | number
+  subMenuList: Array<MenuNode> | null
+}
+interface CheckMenuNode extends MenuNode {
+  selected: boolean
+  subMenuList: Array<CheckMenuNode> | null
+}
+interface Data {
+  menuNodes: Array<MenuNode> | null
+  checkedMenuId: Array<string | number>
+}
+interface Props {
+  roleId: string | number
+}
+interface Methods {
+  [proName: string]: any
+}
+export default Vue.extend<Data, Methods, object, Props>({
   props: {
-    id: {
+    roleId: {
       required: true,
       type: [String, Number]
     }
   },
   data() {
     return {
-      data: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
+      menuNodes: [],
       defaultProps: {
-        children: 'children',
-        label: 'label'
-      }
+        children: 'subMenuList',
+        label: 'name'
+      },
+      checkedMenuId: []
     }
   },
   created() {
-    console.log(this.$route.params)
+    this.loadMenuNodeList()
+    this.loadCheckMenus()
+  },
+  methods: {
+    async loadMenuNodeList() {
+      const { data } = await getMenuNodeList<Array<MenuNode>>()
+      if (data.data.length) {
+        this.menuNodes = data.data
+      }
+    },
+    async onSave() {
+      const { data } = await allocateRoleMenus({
+        roleId: this.roleId,
+        menuIdList: (this.$refs.tree as Tree).getCheckedKeys()
+      })
+      if (data.code === '000000') {
+        this.$message.success('保存成功')
+        this.$router.back()
+      } else {
+        this.$message.error(data.mesg)
+      }
+    },
+    async loadCheckMenus() {
+      const { data } = await getRoleMenus<Array<CheckMenuNode>>({
+        roleId: this.roleId
+      })
+      const checkedArr: Array<string | number> = []
+      this._resolveKeys(data.data, checkedArr)
+      this.checkedMenuId = checkedArr
+    },
+    _resolveKeys(menuNodes: Array<CheckMenuNode>, checkedArr: Array<string | number>) {
+      menuNodes.forEach(menu => {
+        if (menu.selected) {
+          checkedArr.push(menu.id as never)
+        }
+        if (menu.subMenuList?.length) {
+          this._resolveKeys(menu.subMenuList, checkedArr)
+        }
+      })
+    },
+    resetChecked() {
+      (this.$refs.tree as Tree).setCheckedKeys([])
+    }
   }
 })
 </script>

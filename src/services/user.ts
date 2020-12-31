@@ -13,3 +13,21 @@ export async function login(data: User) {
 export async function getUserInfo() {
   return request.get<ResponseData>('/front/user/getInfo')
 }
+interface UserPagesParams {
+  currentPage?: number
+  pageSize?: number
+  phone?: string
+  userId?: string
+  startCreateTime?: string
+  endCreateTime?: string
+}
+interface ResponseBossData<T> {
+  code: string
+  message: string
+  mesg: string
+  time: string
+  data: T
+}
+export function getUserPages<T>(data: UserPagesParams) {
+  return request.post<ResponseBossData<T>>('/boss/user/getUserPages', data)
+}
