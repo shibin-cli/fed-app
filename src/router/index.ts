@@ -25,6 +25,11 @@ const routes: Array<RouteConfig> = [
       component: () => import('@/views/course/index.vue'),
       meta: { requiresAuth: true }
     }, {
+      path: '/course/create',
+      name: 'CreateCourse',
+      component: () => import('@/views/course/create.vue'),
+      meta: { requiresAuth: true }
+    }, {
       path: '/role',
       name: 'Role',
       component: () => import('@/views/role/index.vue'),
