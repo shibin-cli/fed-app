@@ -1,11 +1,19 @@
 <template>
   <div class="header">
-    <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item><a href="/">活动管理</a></el-breadcrumb-item>
-      <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-      <el-breadcrumb-item>活动详情</el-breadcrumb-item>
-    </el-breadcrumb>
+    <div>
+      <el-button
+        icon="el-icon-s-fold"
+        type="text"
+        @click="setCollapse(!isCollapse)"
+      ></el-button>
+      <el-breadcrumb
+        separator="/"
+        class="inline"
+      >
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+        <el-breadcrumb-item v-for="item in navs" :key="item.name">{{item.title}}</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
     <el-dropdown>
       <span class="el-dropdown-link">
         <el-avatar
@@ -19,9 +27,10 @@
       </span>
       <el-dropdown-menu slot="dropdown">
         <el-dropdown-item>{{ userInfo.userName }}</el-dropdown-item>
-        <el-dropdown-item divided @click.native="loginout"
-          >退出</el-dropdown-item
-        >
+        <el-dropdown-item
+          divided
+          @click.native="loginout"
+        >退出</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
   </div>
@@ -29,6 +38,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import { mapState, mapMutations } from 'vuex'
 import { getUserInfo } from '@/services/user'
 export default Vue.extend({
   data() {
@@ -37,10 +47,28 @@ export default Vue.extend({
     }
   },
   created() {
+    console.log(this.$route)
     this.loadUserInfo()
     this.loadUserInfo()
   },
+  computed: {
+    ...mapState(['isCollapse']),
+    navs() {
+      const temps: any[] = []
+      this.$route.matched.filter((item) => {
+        if (item.name) {
+          temps.push({
+            name: item.name,
+            title: item.meta.title
+          })
+        }
+      })
+      console.log(temps)
+      return temps
+    }
+  },
   methods: {
+    ...mapMutations(['setUser', 'setCollapse']),
     async loadUserInfo() {
       const { data } = await getUserInfo()
       if (data.state) {
@@ -50,7 +78,7 @@ export default Vue.extend({
     loginout() {
       this.$confirm('确定要退出吗？', '提示')
         .then(() => {
-          this.$store.commit('setUser', null)
+          this.setUser(null)
           this.$router.push({
             name: 'Login'
           })
@@ -77,6 +105,10 @@ export default Vue.extend({
   .el-dropdown-link {
     display: flex;
     align-items: center;
+  }
+  .el-breadcrumb {
+    display: inline-block;
+    padding-left: 20px;
   }
 }
 </style>

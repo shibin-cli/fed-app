@@ -15,21 +15,41 @@
         :role="currentRole"
       />
     </el-dialog>
-    <el-table :data="roles" border style="width: 100%" v-loading="loading">
+    <el-table
+      :data="roles"
+      border
+      style="width: 100%"
+      v-loading="loading"
+    >
       <el-table-column
         type="index"
         label="编号"
         width="80"
         align="center"
       ></el-table-column>
-      <el-table-column prop="name" label="角色名称"></el-table-column>
-      <el-table-column prop="description" label="描述"></el-table-column>
-      <el-table-column prop="createdTime" label="添加时间" width="200">
+      <el-table-column
+        prop="name"
+        label="角色名称"
+      ></el-table-column>
+      <el-table-column
+        prop="description"
+        label="描述"
+      ></el-table-column>
+      <el-table-column
+        prop="createdTime"
+        label="添加时间"
+        width="200"
+      >
         <template slot-scope="scope">{{
           scope.row.createdTime | formatTime
         }}</template>
       </el-table-column>
-      <el-table-column prop="address" label="操作" width="200" align="center">
+      <el-table-column
+        prop="address"
+        label="操作"
+        width="200"
+        align="center"
+      >
         <template slot-scope="scope">
           <el-row>
             <el-button
@@ -41,16 +61,29 @@
               "
               type="text"
               size="small"
-              >分配菜单</el-button
-            >
-            <el-button type="text" size="small">分配资源</el-button></el-row
-          >
+            >分配菜单</el-button>
+            <el-button
+              type="text"
+              size="small"
+              @click="
+                $router.push({
+                  name: 'AllocResource',
+                  params: { roleId: scope.row.id }
+                })
+              "
+            >分配资源</el-button>
+          </el-row>
           <el-row>
-            <el-button @click="handleEdit(scope.row)" type="text" size="small"
-              >编辑</el-button
-            >
-            <el-button type="text" size="small">删除</el-button></el-row
-          >
+            <el-button
+              @click="handleEdit(scope.row)"
+              type="text"
+              size="small"
+            >编辑</el-button>
+            <el-button
+              type="text"
+              size="small"
+            >删除</el-button>
+          </el-row>
         </template>
       </el-table-column>
     </el-table>

@@ -31,3 +31,18 @@ interface ResponseBossData<T> {
 export function getUserPages<T>(data: UserPagesParams) {
   return request.post<ResponseBossData<T>>('/boss/user/getUserPages', data)
 }
+
+export function enableUser(userId: string | number) {
+  return request.get('/boss/user/enableUser', {
+    params: {
+      userId
+    }
+  })
+}
+export function forbidUser(userId: string | number) {
+  return request.get('/boss/user/forbidUser', {
+    params: {
+      userId
+    }
+  })
+}

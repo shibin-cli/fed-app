@@ -1,10 +1,24 @@
 <template>
   <el-card>
-    <el-form label-width="80px" :inline="true" :model="form" ref="form">
-      <el-form-item label="手机号" prop="name">
-        <el-input v-model="form.phone" clearable></el-input>
+    <el-form
+      label-width="80px"
+      :inline="true"
+      :model="form"
+      ref="form"
+    >
+      <el-form-item
+        label="手机号"
+        prop="name"
+      >
+        <el-input
+          v-model="form.phone"
+          clearable
+        ></el-input>
       </el-form-item>
-      <el-form-item label="注册时间" prop="date">
+      <el-form-item
+        label="注册时间"
+        prop="date"
+      >
         <el-date-picker
           type="daterange"
           unlink-panels
@@ -19,42 +33,84 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" :loading="loading" @click="onSubmit"
-          >查询</el-button
-        >
+        <el-button
+          type="primary"
+          :loading="loading"
+          @click="onSubmit"
+        >查询</el-button>
         <el-button @click="resetForm('form')">重置</el-button>
       </el-form-item>
     </el-form>
-    <el-table :data="users" style="width: 100%" border v-loading="loading">
-      <el-table-column prop="name" label="用户名" width="180">
+    <el-table
+      :data="users"
+      style="width: 100%"
+      border
+      v-loading="loading"
+    >
+      <el-table-column
+        prop="name"
+        label="用户名"
+        width="180"
+      >
       </el-table-column>
-      <el-table-column label="头像" width="150" align="center">
+      <el-table-column
+        label="头像"
+        width="150"
+        align="center"
+      >
         <template slot-scope="scope">
-          <el-avatar size="medium" :src="scope.row.portrait"></el-avatar>
+          <el-avatar
+            size="medium"
+            :src="scope.row.portrait"
+          ></el-avatar>
         </template>
       </el-table-column>
-      <el-table-column prop="phone" label="手机号"> </el-table-column>
-      <el-table-column prop="createTime" label="注册时间" width="200">
+      <el-table-column
+        prop="phone"
+        label="手机号"
+      > </el-table-column>
+      <el-table-column
+        prop="createTime"
+        label="注册时间"
+        width="200"
+      >
         <template slot-scope="scope">{{
           scope.row.createTime | formatTime
         }}</template>
       </el-table-column>
-      <el-table-column prop="id" label="用户id" width="180" align="center">
+      <el-table-column
+        prop="id"
+        label="用户id"
+        width="180"
+        align="center"
+      >
       </el-table-column>
-      <el-table-column prop="status" label="状态">
+      <el-table-column
+        prop="status"
+        label="状态"
+      >
         <template slot-scope="scope">
-          <span v-if="scope.row.status === 'ENABLE'">启用</span>
-          <span v-else-if="scope.row.status === 'DISABLE'" class="status-danger"
-            >禁用</span
+          <el-switch
+            v-model="scope.row.status"
+            active-value="ENABLE"
+            inactive-value="DISABLE"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            @change="changeStatus(scope.row)"
           >
+          </el-switch>
         </template>
       </el-table-column>
-      <el-table-column prop="address" label="操作" align="center">
+      <el-table-column
+        prop="address"
+        label="操作"
+        align="center"
+      >
         <template slot-scope="scope">
-          <el-button size="mini">禁用</el-button>
-          <el-button size="mini" @click="allocRoleDialog(scope.row)"
-            >分配角色</el-button
-          >
+          <el-button
+            size="mini"
+            @click="allocRoleDialog(scope.row)"
+          >分配角色</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -74,7 +130,11 @@
       width="30%"
       :before-close="handleClose"
     >
-      <el-select v-model="checkedRoleId" multiple placeholder="请选择">
+      <el-select
+        v-model="checkedRoleId"
+        multiple
+        placeholder="请选择"
+      >
         <el-option
           v-for="item in roles"
           :key="item.id"
@@ -83,9 +143,15 @@
         >
         </el-option>
       </el-select>
-      <span slot="footer" class="dialog-footer">
+      <span
+        slot="footer"
+        class="dialog-footer"
+      >
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="allocRole">确 定</el-button>
+        <el-button
+          type="primary"
+          @click="allocRole"
+        >确 定</el-button>
       </span>
     </el-dialog>
   </el-card>
@@ -93,7 +159,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { getUserPages } from '@/services/user'
+import { forbidUser, getUserPages } from '@/services/user'
 import { getRoles, alloctRoles, getUserRole } from '@/services/role'
 import dayjs from 'dayjs'
 import { DatePicker, Form } from 'element-ui'
@@ -185,12 +251,34 @@ export default Vue.extend({
       this.currentPage = 1
       this.loadUsers()
     },
+    async changeStatus(row: any) {
+      console.log(row)
+      try {
+
+      } catch (error) {
+
+      }
+      if (row.status === 'DISABLE') {
+        try {
+          const { data } = await forbidUser(row.id)
+          this.$message.success('禁用成功')
+        } catch (error) {
+          row.status = 'ENABLE'
+        }
+      } else if (row.status === 'ENABLE') {
+        try {
+          const { data } = await forbidUser(row.id)
+          this.$message.success('启用成功')
+        } catch (error) {
+          row.status = 'DISABLE'
+        }
+      }
+    },
     allocRoleDialog(row: any) {
       this.dialogVisible = true
       this.currentRow = row
       this.loadRoles()
       this.loadRolesPermission()
-      console.log(row)
     },
     handleSizeChange(val: number) {
       this.pageSize = val

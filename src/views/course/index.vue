@@ -1,8 +1,48 @@
 <template>
   <el-card>
-   <div slot="header">
-   <el-button @click="$router.push({name:'CreateCourse'})">新建课程</el-button>
-  </div>
+    <el-form
+      inline
+      slot="header"
+      class="header"
+    >
+      <el-form-item label="课程名称">
+        <el-input
+          v-model="courseName"
+          placeholder="请输入课程名称"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="状态">
+        <el-select
+          v-model="status"
+          placeholder="状态"
+        >
+          <el-option
+            label="全部"
+            value=""
+          ></el-option>
+          <el-option
+            label="上架"
+            value="1"
+          ></el-option>
+          <el-option
+            label="下架"
+            value="0"
+          ></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          @click="fnSearch"
+        >查询</el-button>
+      </el-form-item>
+      <el-form-item class="add">
+        <el-button
+          icon="el-icon-plus"
+          @click="$router.push({name:'CreateCourse'})"
+        >新建课程</el-button>
+      </el-form-item>
+    </el-form>
     <el-table
       :data="courses"
       border
@@ -56,9 +96,19 @@
         width="300"
         align="center"
       >
-        <template>
-          <el-button size="small">编辑</el-button>
-          <el-button size="small">内容管理</el-button>
+        <template slot-scope="scope">
+          <el-button
+            size="small"
+            @click="$router.push({name:'CourseEdit',params:{
+            courseId:scope.row.id
+          }})"
+          >编辑</el-button>
+          <el-button
+            size="small"
+            @click="$router.push({name:'CourseSection',params:{
+            courseId:scope.row.id
+          }})"
+          >内容管理</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -83,6 +133,8 @@ export default Vue.extend({
     return {
       courses: [],
       loading: false,
+      courseName: '',
+      status: '',
       page: {
         pageSize: 10,
         currentPage: 1,
@@ -97,7 +149,9 @@ export default Vue.extend({
     async loadCourses() {
       this.loading = true
       const { data } = await getCourses({
-        ...this.page
+        ...this.page,
+        courseName: this.courseName,
+        status: this.status
       })
       this.loading = false
       this.page.total = data.data.total
@@ -105,6 +159,10 @@ export default Vue.extend({
         item.loading = false
       })
       this.courses = data.data.records
+    },
+    fnSearch() {
+      this.page.currentPage = 1
+      this.loadCourses()
     },
     handleSizeChange(val: number) {
       console.log(`每页 ${val} 条`)
@@ -132,7 +190,13 @@ export default Vue.extend({
 })
 </script>
 
-<style>
+<style scoped lang="scss">
+.header {
+  display: flex;
+  .add {
+    margin-left: auto;
+  }
+}
 .el-pagination {
   text-align: center;
   padding: 20px 0;
